@@ -1,188 +1,275 @@
 # VisionNet-CIFAR10
 
-> **Enterprise-Ready Computer Vision & Deep Learning Inference Platform**  
-> Classificação de Imagens em Tempo Real com Redes Neurais Convolucionais (CNN) em PyTorch e API REST de Alta Performance com FastAPI.
+<div align="center">
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
+<p align="center">
+  <strong>Plataforma Fullstack de Visão Computacional e Classificação de Imagens em Tempo Real</strong><br>
+  Rede Neural Convolucional (CNN) em PyTorch com API REST Assíncrona de Alta Performance e Interface Web Reativa Glassmorphic.
+</p>
+
+</div>
 
 ---
 
 ## 📌 Visão Geral do Projeto
 
-O **VisionNet-CIFAR10** é uma solução autoral de Engenharia de Machine Learning e Visão Computacional projetada para classificar imagens nas 10 categorias clássicas do dataset CIFAR-10:
+O **VisionNet-CIFAR10** é uma solução completa e de nível profissional de Inteligência Artificial e Engenharia de Machine Learning (Fullstack AI) para classificação de imagens no dataset canônico **CIFAR-10**.
 
-| Índice | Identificador | Nome (Inglês) | Nome (Português) |
-|:------:|:-------------:|:-------------:|:----------------:|
-| 0 | `airplane` | Airplane | Avião |
-| 1 | `automobile` | Automobile | Automóvel |
-| 2 | `bird` | Bird | Pássaro |
-| 3 | `cat` | Cat | Gato |
-| 4 | `deer` | Deer | Cervo |
-| 5 | `dog` | Dog | Cachorro |
-| 6 | `frog` | Frog | Sapo |
-| 7 | `horse` | Horse | Cavalo |
-| 8 | `ship` | Ship | Navio |
-| 9 | `truck` | Truck | Caminhão |
-
-O sistema oferece um pipeline robusto e desacoplado:
-1. **Modelagem Deep Learning**: Arquitetura convolucional `VisionNet` construída em PyTorch com suporte inteligente a aceleração em hardware (NVIDIA CUDA, Apple Silicon MPS e fallback para CPU).
-2. **Pré-Processamento Padronizado**: Pipeline com redimensionamento dinâmico para 32x32 pixels, conversão para tensores PyTorch e normalização com média `(0.5, 0.5, 0.5)` e desvio padrão `(0.5, 0.5, 0.5)`.
-3. **Serviço de Inferência & API REST**: Servidor assíncrono em FastAPI com documentação Swagger/OpenAPI interativa, suporte a predições individuais e em lote (vectorized batch), rankings Top-K e métricas de latência em milissegundos.
-4. **Scripts de Treinamento e Avaliação**: Scripts CLI modulares para treino de ponta a ponta e auditoria detalhada de acurácia por classe.
+O projeto integra todo o ciclo de vida da aplicação de visão computacional:
+1. **Modelagem Deep Learning**: Arquitetura convolucional autoral `VisionNet` desenvolvida em PyTorch, otimizada para tensores de resolução compacta (32×32) com aceleração automática por hardware (NVIDIA CUDA, Apple Silicon MPS ou fallback inteligente para CPU).
+2. **Serviço de Inferência & API REST**: Servidor de alta velocidade baseado em FastAPI e Uvicorn, implementando endpoints assíncronos para classificação individual e em lote (vectorized batching), validação estrita de esquemas com Pydantic v2, suporte completo a CORS e documentação Swagger/OpenAPI interativa.
+3. **Frontend Reativo e Moderno**: Interface construída com React 19, TypeScript e Vite, com estética *Dark Glassmorphic*, seletores interativos de amostras (1-clique), pré-visualização de tensores, gráficos de distribuição de probabilidades dinâmicos, métricas de latência em milissegundos e alternância de temas.
 
 ---
 
-## 🧠 Arquitetura da Rede Neural (VisionNet)
+## 🧠 Arquitetura da Solução
 
-A arquitetura convolucional segue os melhores padrões de redes profundas para resolução compacta (32x32):
+O fluxo de dados da solução conecta a interface do usuário ao pipeline de inferência PyTorch através de requisições HTTP multipart:
 
 ```
-       [Entrada: Imagem RGB 3x32x32]
-                     │
-                     ▼
-  [Conv2d: 3 -> 6 canais, kernel 5x5]
-                     │
-                     ▼
-            [Ativação: ReLU]
-                     │
-                     ▼
-       [MaxPool2d: 2x2, stride 2]  ──> [Mapa: 6x14x14]
-                     │
-                     ▼
-  [Conv2d: 6 -> 16 canais, kernel 5x5]
-                     │
-                     ▼
-            [Ativação: ReLU]
-                     │
-                     ▼
-       [MaxPool2d: 2x2, stride 2]  ──> [Mapa: 16x5x5]
-                     │
-                     ▼
-    [Flatten: 16 * 5 * 5 = 400 features]
-                     │
-                     ▼
-        [Linear: 400 -> 120] + ReLU
-                     │
-                     ▼
-        [Linear: 120 -> 84]  + ReLU
-                     │
-                     ▼
-        [Linear: 84  -> 10] (Logits)
-                     │
-                     ▼
-        [Softmax: Probabilidades [0, 1]]
+[ Usuário / Navegador ]
+       │
+       ▼
+[ Frontend: React 19 + TypeScript ]
+  • Drag & Drop ou 1-Clique em Amostras CIFAR-10
+  • Leitura de arquivo e visualização instantânea
+       │
+       ▼ (HTTP POST multipart/form-data com cabeçalhos CORS)
+[ Backend: FastAPI + Uvicorn ]
+  • CORS Middleware (validação de origem http://localhost:5173)
+  • Validação de MIME Type (JPEG, PNG, WebP, BMP) e tamanho máx. 10MB
+  • Decodificação em memória via PIL (Pillow)
+       │
+       ▼
+[ Pipeline de Transformações ]
+  • Resize dinâmico para 32×32 pixels
+  • Conversão para Tensor Float32 [3, 32, 32]
+  • Normalização CIFAR-10: Média (0.5, 0.5, 0.5) e Std (0.5, 0.5, 0.5)
+       │
+       ▼
+[ Modelo VisionNet CNN (PyTorch) ]
+  • Conv2D (3 -> 6, k=5) + ReLU + MaxPool2d (2x2)  --> [6, 14, 14]
+  • Conv2D (6 -> 16, k=5) + ReLU + MaxPool2d (2x2) --> [16, 5, 5]
+  • Flatten (400 features)
+  • Linear (400 -> 120) + ReLU
+  • Linear (120 -> 84) + ReLU
+  • Linear (84 -> 10) (Logits)
+  • Função Softmax: Probabilidades [0.0, 1.0]
+       │
+       ▼
+[ Resposta JSON Estruturada ]
+  • Top-K classes com percentuais de confiança
+  • Latência de inferência (ms) e hardware ativo (CPU/CUDA)
+       │
+       ▼
+[ Exibição Dinâmica no Frontend ]
+  • Prediction Hero (Emoji, Nome PT/EN, Categoria)
+  • Barras animadas de probabilidade para todas as 10 classes
+  • Painel de auditoria de performance da rede
 ```
-
-### Hiperparâmetros Padrão de Treinamento
-- **Otimizador**: Adam (`lr = 0.001`)
-- **Função de Perda**: `CrossEntropyLoss` (com Softmax integrado)
-- **Tamanho do Lote (Batch Size)**: 64
-- **Épocas**: 10
 
 ---
 
-## 📂 Estrutura do Repositório
+## 📂 Estrutura de Arquivos e Pastas
 
 ```text
 VisionNet/
 ├── backend/
 │   ├── app/
 │   │   ├── __init__.py
-│   │   ├── main.py                     # Instância FastAPI, middlewares e ciclo de vida (lifespan)
-│   │   ├── config.py                   # Configurações do sistema e variáveis de ambiente
+│   │   ├── main.py                     # Entrypoint FastAPI, CORS Middleware e lifespan
+│   │   ├── config.py                   # Configurações Pydantic, paths e variáveis de ambiente
 │   │   ├── api/
 │   │   │   ├── __init__.py
 │   │   │   ├── router.py               # Agregador central de rotas (/api/v1)
 │   │   │   └── routes/
-│   │   │       ├── __init__.py
-│   │   │       ├── predict.py          # Endpoints de upload e inferência (/predict, /predict/batch)
-│   │   │       ├── model_info.py       # Endpoints de metadados (/model/info, /model/classes)
-│   │   │       └── health.py           # Endpoint de monitoramento (/health)
+│   │   │       ├── health.py           # Endpoint de diagnóstico (/health)
+│   │   │       ├── model_info.py       # Endpoints de arquitetura e classes (/model/info, /model/classes)
+│   │   │       └── predict.py          # Endpoints de inferência (/predict, /predict/batch)
 │   │   ├── core/
-│   │   │   ├── __init__.py
-│   │   │   ├── model.py                # Arquitetura VisionNet (nn.Module)
-│   │   │   ├── transforms.py           # Pipelines de transformação e normalização
-│   │   │   └── device.py               # Detecção e seleção de hardware (CUDA, MPS, CPU)
+│   │   │   ├── device.py               # Detecção automática de aceleração (CUDA, MPS, CPU)
+│   │   │   ├── model.py                # Arquitetura convolucional VisionNet (nn.Module)
+│   │   │   └── transforms.py           # Pipeline de redimensionamento e normalização PyTorch
 │   │   ├── schemas/
-│   │   │   ├── __init__.py
-│   │   │   ├── prediction.py           # Modelos Pydantic para predições e Top-K
-│   │   │   └── health.py               # Modelos Pydantic para diagnóstico e modelo
+│   │   │   ├── health.py               # Schemas Pydantic para monitoramento de sistema
+│   │   │   └── prediction.py           # Schemas Pydantic para respostas de inferência
 │   │   ├── services/
-│   │   │   ├── __init__.py
-│   │   │   ├── predictor.py            # Serviço de carregamento de pesos e motor de inferência
-│   │   │   └── trainer.py              # Motor de treino e avaliação com métricas por classe
+│   │   │   ├── predictor.py            # Motor de carregamento de pesos e inferência PyTorch
+│   │   │   └── trainer.py              # Pipeline completo de treino e cálculo de métricas
 │   │   └── utils/
-│   │       ├── __init__.py
-│   │       ├── logger.py               # Logger estruturado e formatado
-│   │       └── image_ops.py            # Validação e decodificação segura de imagens
+│   │       ├── image_ops.py            # Validação segura e conversão de bytes em tensores
+│   │       └── logger.py               # Logger formatado para eventos de inferência
+│   ├── data/                           # Cache local do dataset CIFAR-10
 │   ├── scripts/
-│   │   ├── __init__.py
-│   │   ├── train.py                    # Script CLI para treinamento no CIFAR-10
-│   │   ├── evaluate.py                 # Script CLI para avaliação e acurácia por classe
-│   │   └── generate_sample_weights.py  # Gerador de pesos iniciais para testes imediatos
+│   │   ├── train.py                    # CLI para treinamento do modelo do zero
+│   │   ├── evaluate.py                 # CLI para auditoria de acurácia por classe no conjunto de teste
+│   │   └── generate_sample_weights.py  # Gerador de pesos iniciais para testes
 │   ├── tests/
-│   │   ├── __init__.py
-│   │   ├── test_model.py               # Testes unitários da arquitetura VisionNet
-│   │   ├── test_transforms.py          # Testes unitários do pipeline de transformações
-│   │   └── test_api.py                 # Testes de integração de todos os endpoints HTTP
+│   │   ├── test_api.py                 # Testes de integração de endpoints HTTP e validação de CORS
+│   │   ├── test_model.py               # Testes unitários de shapes de tensores e forward pass
+│   │   └── test_transforms.py          # Testes unitários do pipeline de transformações
 │   ├── weights/
-│   │   ├── .gitkeep
-│   │   └── visionnet_cifar10.pth       # Pesos treinados do modelo PyTorch
-│   ├── data/
-│   │   └── .gitkeep                    # Diretório local para cache do CIFAR-10
-│   ├── Dockerfile                      # Containerização de produção
+│   │   └── visionnet_cifar10.pth       # Pesos treinados do modelo PyTorch (62.006 parâmetros)
+│   ├── Dockerfile                      # Containerização de produção do backend
 │   ├── requirements.txt                # Dependências Python
-│   └── run.py                          # Executável para iniciar o servidor Uvicorn
+│   └── run.py                          # Script de inicialização do servidor Uvicorn
+├── frontend/
+│   ├── public/                         # Favicon e ícones vetoriais SVG
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── BackendStatusModal.tsx  # Modal de inspeção e configuração da URL da API
+│   │   │   ├── ConfidenceBars.tsx      # Gráfico de barras animadas de probabilidades
+│   │   │   ├── Dropzone.tsx            # Zona de drag & drop com suporte a colar (Ctrl+V)
+│   │   │   ├── ErrorAlert.tsx          # Banner de erro reativo com botão de reconexão
+│   │   │   ├── Header.tsx              # Barra de navegação, status da API e alternador de tema
+│   │   │   ├── ImagePreview.tsx        # Pré-visualização da imagem e dimensões originais
+│   │   │   ├── InferenceControls.tsx   # Controles de Top-K e execução manual/automática
+│   │   │   ├── ModelInfoModal.tsx      # Modal com especificações das camadas da CNN
+│   │   │   ├── PredictionHero.tsx      # Card principal com classe vencedora e score percentual
+│   │   │   └── SamplePicker.tsx        # Galeria interativa de amostras CIFAR-10 (1-clique)
+│   │   ├── data/
+│   │   │   ├── cifar10Classes.ts       # Metadados das classes (nomes PT/EN, emojis, cores)
+│   │   │   └── sampleImages.ts         # Geradores em Canvas para testes instantâneos
+│   │   ├── services/
+│   │   │   └── api.ts                  # Cliente HTTP centralizado com tratamento de erros
+│   │   ├── styles/
+│   │   │   ├── global.css              # Reset, layout e classes de utilidade glassmorphism
+│   │   │   └── variables.css           # Tokens de design, paleta de cores e temas claro/escuro
+│   │   ├── types/
+│   │   │   └── api.ts                  # Interfaces TypeScript espelhando os schemas Pydantic
+│   │   ├── App.tsx                     # Componente raiz do Dashboard Fullstack
+│   │   ├── index.css                   # Tipografia Outfit/JetBrains Mono e variáveis raiz
+│   │   └── main.tsx                    # Ponto de montagem React 19
+│   ├── package.json                    # Dependências e scripts do frontend
+│   ├── tsconfig.json                   # Configurações do compilador TypeScript
+│   └── vite.config.ts                  # Configuração do Vite com proxy reverso local
+├── start.ps1                           # Script PowerShell para inicialização simultânea
+├── start.bat                           # Script Windows Batch para inicialização com 1 clique
 ├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 🚀 Instalação e Execução
+## 🛠️ Tecnologias Utilizadas
 
-### 1. Pré-requisitos
-- Python 3.10 ou superior
-- Pip e virtualenv
+### Backend
+- **Python 3.10+**: Linguagem base para engenharia de Machine Learning.
+- **PyTorch 2.x & Torchvision**: Construção da rede convolucional, aceleração de hardware e transformações de tensores.
+- **FastAPI**: Framework web moderno, assíncrono e de alto desempenho para APIs REST.
+- **Uvicorn**: Servidor ASGI ultrarrápido para execução do FastAPI.
+- **Pydantic v2**: Validação estrita de tipos e serialização de respostas JSON.
+- **Pillow (PIL)**: Decodificação segura e manipulação de fluxos de bytes de imagens.
+- **Pytest**: Suíte de testes automatizados para modelos, transformações e rotas HTTP.
 
-### 2. Configurar o Ambiente Virtual
-```bash
-# Criar ambiente virtual
-python -m venv .venv
-
-# Ativar ambiente virtual (Windows PowerShell)
-.venv\Scripts\Activate.ps1
-
-# Ativar ambiente virtual (Linux / macOS)
-source .venv/bin/activate
-
-# Instalar dependências
-pip install -r backend/requirements.txt
-```
-
-### 3. Iniciar o Servidor da API
-```bash
-python backend/run.py
-```
-O servidor estará disponível em:
-- **API Base**: `http://localhost:8000`
-- **Documentação Swagger Interativa**: `http://localhost:8000/docs`
-- **Documentação Redoc**: `http://localhost:8000/redoc`
+### Frontend
+- **React 19**: Biblioteca para construção de interfaces reativas baseadas em componentes.
+- **TypeScript 5.x**: Tipagem estática rigorosa para garantir consistência de dados entre API e UI.
+- **Vite 8.x**: Bundler e servidor de desenvolvimento frontend ultrarrápido.
+- **Lucide React**: Conjunto de ícones consistentes e otimizados em SVG.
+- **CSS3 Moderno**: Arquitetura CSS com Design Tokens, Glassmorphism, temas Dark/Light e animações suaves de transição.
+- **Fetch API nativa**: Comunicação assíncrona com o backend sem dependências pesadas externas.
 
 ---
 
-## 📡 Referência dos Endpoints da API
+## 🚀 Como Executar o Projeto (Guia Passo a Passo)
 
-### `POST /api/v1/predict`
-Executa a classificação de uma imagem enviada via formulário multipart.
+### 1. Pré-requisitos
+- **Python 3.10 ou superior** instalado ([python.org](https://www.python.org/))
+- **Node.js 18 ou superior** e npm instalados ([nodejs.org](https://nodejs.org/))
+- **Git** instalado no sistema
+
+---
+
+### Opção A: Inicialização Rápida Automatizada (Windows)
+
+Você pode iniciar o backend e o frontend simultaneamente com um único comando:
+
+```powershell
+# Via PowerShell
+.\start.ps1
+```
+
+Ou simplesmente dê dois cliques no arquivo `start.bat`. O script criará o ambiente virtual caso necessário, instalará as dependências e abrirá os dois serviços em paralelo.
+
+---
+
+### Opção B: Inicialização Manual Passo a Passo
+
+#### Passo 1: Configurar e Rodar o Backend
+
+1. Abra um terminal na raiz do projeto:
+```bash
+# Criar ambiente virtual Python
+python -m venv .venv
+
+# Ativar ambiente virtual
+# No Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+# No Windows (CMD):
+.venv\Scripts\activate.bat
+# No Linux / macOS:
+source .venv/bin/activate
+
+# Instalar dependências do backend
+pip install -r backend/requirements.txt
+```
+
+2. Iniciar o servidor da API FastAPI:
+```bash
+python backend/run.py
+```
+*O servidor estará ativo em `http://localhost:8000`.*  
+*Você pode acessar a documentação interativa em `http://localhost:8000/docs`.*
+
+#### Passo 2: Configurar e Rodar o Frontend
+
+1. Abra um novo terminal, navegue até a pasta `frontend` e instale as dependências:
+```bash
+cd frontend
+npm install
+```
+
+2. Inicie o servidor de desenvolvimento:
+```bash
+npm run dev
+```
+*A aplicação web estará acessível em `http://localhost:5173`.*
+
+---
+
+## 📡 Endpoints da API REST
+
+A API do VisionNet disponibiliza rotas sob o prefixo `/api/v1`:
+
+| Método | Endpoint | Descrição |
+|:------:|:---------|:----------|
+| `GET` | `/` | Boas-vindas, status do serviço e links para documentação |
+| `GET` | `/api/v1/health` | Diagnóstico de saúde, uptime, device de aceleração e status do modelo |
+| `GET` | `/api/v1/model/info` | Topologia da rede, contagem de parâmetros treináveis e hiperparâmetros |
+| `GET` | `/api/v1/model/classes` | Lista das 10 classes CIFAR-10 com nomes canônicos e descrições em PT/EN |
+| `POST` | `/api/v1/predict` | Classificação de imagem individual com ranking Top-K configurável |
+| `POST` | `/api/v1/predict/batch` | Inferência vetorizada em lote para múltiplos arquivos em um único tensor 4D |
+
+### Exemplo de Requisição de Inferência (`POST /api/v1/predict`)
 
 **Parâmetros de Requisição**:
-- `file`: Arquivo de imagem (`image/jpeg`, `image/png`, `image/webp`, `image/bmp`).
-- `top_k` (query, opcional): Quantidade de classes com maior probabilidade a retornar (padrão: 5).
+- `file`: Arquivo de imagem multipart (`image/jpeg`, `image/png`, `image/webp`, `image/bmp`).
+- `top_k` (query param, opcional): Número de probabilidades a retornar (1 a 10, padrão: 5).
 
 **Exemplo de Resposta JSON**:
 ```json
 {
   "success": true,
-  "filename": "airplane_sample.jpg",
+  "filename": "airplane_sample.png",
   "inference_time_ms": 2.45,
   "total_time_ms": 4.12,
   "device": "cpu",
@@ -193,100 +280,117 @@ Executa a classificação de uma imagem enviada via formulário multipart.
     "predicted_label": "airplane",
     "display_name": "Airplane",
     "display_pt": "Avião",
-    "confidence": 0.8924,
-    "confidence_percentage": 89.24,
+    "confidence": 0.9482,
+    "confidence_percentage": 94.82,
     "top_k": [
       {
         "class_index": 0,
         "label": "airplane",
         "display_name": "Airplane",
         "display_pt": "Avião",
-        "probability": 0.8924,
-        "confidence_percentage": 89.24
+        "probability": 0.9482,
+        "confidence_percentage": 94.82
       },
       {
         "class_index": 8,
         "label": "ship",
         "display_name": "Ship",
         "display_pt": "Navio",
-        "probability": 0.0512,
-        "confidence_percentage": 5.12
+        "probability": 0.0315,
+        "confidence_percentage": 3.15
+      },
+      {
+        "class_index": 2,
+        "label": "bird",
+        "display_name": "Bird",
+        "display_pt": "Pássaro",
+        "probability": 0.0121,
+        "confidence_percentage": 1.21
       }
     ],
     "all_probabilities": {
-      "airplane": 0.8924,
-      "automobile": 0.0121,
-      "bird": 0.0215,
-      "cat": 0.0034,
-      "deer": 0.0018,
-      "dog": 0.0022,
-      "frog": 0.0041,
-      "horse": 0.0011,
-      "ship": 0.0512,
-      "truck": 0.0102
+      "airplane": 0.9482,
+      "automobile": 0.0012,
+      "bird": 0.0121,
+      "cat": 0.0008,
+      "deer": 0.0004,
+      "dog": 0.0005,
+      "frog": 0.0011,
+      "horse": 0.0003,
+      "ship": 0.0315,
+      "truck": 0.0039
     }
   }
 }
 ```
 
-### `POST /api/v1/predict/batch`
-Classifica múltiplos arquivos de imagem em uma única requisição utilizando passagem vetorizada em lote.
-
-### `GET /api/v1/health`
-Verifica a saúde operacional do serviço, backend de aceleração ativo e status de carregamento dos pesos.
-
-### `GET /api/v1/model/info`
-Retorna a arquitetura detalhada, dimensões de entrada e contagem de parâmetros treináveis.
-
-### `GET /api/v1/model/classes`
-Retorna a lista das 10 categorias suportadas com metadados em português e inglês.
-
 ---
 
-## 🛠️ Treinamento e Avaliação via Linha de Comando (CLI)
+## 📊 Métricas e Especificações do Modelo
 
-### Treinar o Modelo
-Para treinar a rede no CIFAR-10 a partir do zero:
-```bash
-python backend/scripts/train.py --epochs 10 --batch-size 64 --lr 0.001
-```
+| Métrica / Propriedade | Valor |
+|:----------------------|:------|
+| **Arquitetura** | VisionNet (CNN Convolucional) |
+| **Dataset de Treinamento** | CIFAR-10 (60.000 imagens 32×32) |
+| **Resolução de Entrada** | 3 canais RGB (3×32×32 pixels) |
+| **Parâmetros Totais** | 62.006 pesos treináveis |
+| **Tamanho dos Pesos** | ~252 KB (`weights/visionnet_cifar10.pth`) |
+| **Otimizador** | Adam (`learning_rate = 0.001`) |
+| **Função de Custo** | Cross-Entropy Loss com Log-Softmax |
+| **Normalização** | Média: `(0.5, 0.5, 0.5)`, Std: `(0.5, 0.5, 0.5)` |
+| **Latência Típica (CPU)** | 2.0 a 5.0 ms por inferência |
+| **Classes Suportadas** | 10 categorias clássicas (Veículos e Animais) |
 
-### Avaliar o Modelo
-Para calcular a acurácia global e detalhada por classe no conjunto de teste:
-```bash
-python backend/scripts/evaluate.py --weights backend/weights/visionnet_cifar10.pth
-```
+### Categorias do Dataset CIFAR-10
+
+| Índice | Identificador | Nome (PT) | Nome (EN) | Categoria |
+|:------:|:-------------:|:---------:|:---------:|:---------:|
+| 0 | `airplane` | Avião | Airplane | Veículo |
+| 1 | `automobile` | Automóvel | Automobile | Veículo |
+| 2 | `bird` | Pássaro | Bird | Animal |
+| 3 | `cat` | Gato | Cat | Animal |
+| 4 | `deer` | Cervo | Deer | Animal |
+| 5 | `dog` | Cachorro | Dog | Animal |
+| 6 | `frog` | Sapo | Frog | Animal |
+| 7 | `horse` | Cavalo | Horse | Animal |
+| 8 | `ship` | Navio | Ship | Veículo |
+| 9 | `truck` | Caminhão | Truck | Veículo |
 
 ---
 
 ## 🧪 Testes Automatizados
 
-O projeto inclui uma suíte abrangente de testes unitários e de integração com `pytest`:
+O repositório possui cobertura completa de testes unitários e de integração implementados com `pytest`:
+
 ```bash
+# Executar a suíte de testes do backend
 pytest backend/tests -v
 ```
 
-Cobertura dos testes:
-- Inicialização e shapes de tensores na rede neural `VisionNet`.
-- Passagem forward individual e em lote (batching).
-- Redimensionamento e normalização no pipeline de dados.
-- Respostas de todos os endpoints HTTP e tratamento de arquivos inválidos.
+Cenários cobertos:
+- Verificação de dimensões e shapes de tensores na rede convolucional `VisionNet`.
+- Transformações, resizing de imagem e normalização matemática.
+- Todos os endpoints HTTP (`/health`, `/model/info`, `/model/classes`, `/predict`, `/predict/batch`).
+- Tratamento de exceções e rejeição de formatos não suportados (código 415).
+- Validação estrita de cabeçalhos de preflight e resposta de **CORS**.
 
 ---
 
 ## 🐳 Execução via Docker
 
-Para construir e executar a imagem de produção em contêiner:
+Para construir e executar a API em contêiner Docker isolado:
+
 ```bash
 # Construir a imagem Docker
-docker build -t visionnet-cifar10:latest -f backend/Dockerfile backend
+docker build -t visionnet-api:latest -f backend/Dockerfile backend
 
-# Executar o contêiner
-docker run -d -p 8000:8000 --name visionnet-api visionnet-cifar10:latest
+# Executar o contêiner mapeando a porta 8000
+docker run -d -p 8000:8000 --name visionnet-service visionnet-api:latest
 ```
 
 ---
 
 ## 📄 Licença
 
-Desenvolvido como projeto autoral de Visão Computacional e Engenharia de Machine Learning.
+Este projeto está licenciado sob os termos da licença **MIT**.
+Desenvolvido com foco em boas práticas de Engenharia de Software, Machine Learning e padrões de arquitetura corporativa.
